@@ -1,11 +1,11 @@
-import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import icon from "astro-icon";
+import { defineConfig } from "astro/config";
 import remarkReadingTime from "remark-reading-time";
 
 export default defineConfig({
-  site: "https://astrostarterpro.com/",
+  site: "https://adrianmartinez.ch/",
   integrations: [sitemap(), icon()],
   markdown: {
     remarkPlugins: [

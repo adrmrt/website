@@ -13,21 +13,6 @@ npm install
 npm run dev
 ```
 
-## Configuration
-
-All global site information is managed in `src/config/site.ts`. Update this file with your data:
-
-```typescript
-// src/config/site.ts
-export const siteConfig = {
-  name: "Astro Starter Pro",
-  description: "Your SEO description",
-  url: "https://astrostarterpro.com",
-  author: "Angelo Pescetto",
-  // ...
-};
-```
-
 ## Commands
 
 | Command             | Action                                             |
