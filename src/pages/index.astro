@@ -1,15 +1,15 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { siteConfig } from "../config/site";
-import Hero from "../components/widgets/Hero.astro";
-import Features from "../components/widgets/Features.astro";
 import devImg from "../assets/images/dev_balanced.png";
 import openSourceImg from "../assets/images/open-source.png";
 import Content2 from "../components/widgets/Content2.astro";
+import Features from "../components/widgets/Features.astro";
+import Hero from "../components/widgets/Hero.astro";
+import { siteConfig } from "../config/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
 const metadata = {
-  title: `${siteConfig.name} — The next step for your project`,
+  title: `${siteConfig.name}`,
   description:
-    "A modern and professional template for your web projects with Astro and Tailwind CSS. Boost your development with a solid foundation.",
+    "Hey, it's Adrian. I build software and tools. This is my little corner of the internet.",
   ignoreTitleTemplate: true,
 };
 ---
@@ -17,21 +17,20 @@ const metadata = {
 <BaseLayout {metadata}>
   <Hero
     title={`Starter Template for <br class="hidden md:block" /> <span class="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Web Developers</span>`}
-    tagline="Astro v5 + Tailwind v4"
+    tagline=""
     description={`${siteConfig.description}`}
     actions={[
       {
-        text: "Get Started",
-        href: "https://github.com/devgelo-labs/astro-starter-pro",
+        text: "GitHub",
+        href: "https://github.com/adrmrt",
         variant: "primary",
         icon: "lucide:github",
       },
       {
-        text: "Our Services",
-        href: "/services",
-        variant: "secondary",
-        icon: "lucide:arrow-right",
-        ariaLabel: "Learn more about our services",
+        text: "LinkedIn",
+        href: "https://www.linkedin.com/in/adrian-martinez-722709237/",
+        variant: "primary",
+        icon: "lucide:linkedin",
       },
     ]}
   />

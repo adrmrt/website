@@ -3,7 +3,7 @@ import ogImage from "../assets/og-image.png";
 export const siteConfig = {
   name: "Adrian Martinez",
   description:
-    "Starter template optimized for SEO and performance. A solid foundation to start your projects with best practices.",
+    "Software engineering student from Switzerland with a passion for software development and web technologies.",
   url: "https://adrianmartinez.ch",
   lang: "en",
   locale: "en_US",
@@ -11,6 +11,7 @@ export const siteConfig = {
   ogImage: ogImage,
   socialLinks: {
     github: "https://github.com/adrmrt",
+    linkedin: "https://www.linkedin.com/in/adrian-martinez-722709237/",
   },
   navLinks: [
     { text: "Home", href: "/" },
