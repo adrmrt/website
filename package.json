@@ -17,7 +17,7 @@
     "build-preview": "npm run build && npm run preview"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
+    "@astrojs/check": "^0.9.2",
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.6.1",
     "@iconify-json/lucide": "^1.2.86",
