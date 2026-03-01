@@ -48,3 +48,10 @@ const canonicalURL =
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(ogImageSrc, siteConfig.url)} />
 <meta property="og:locale" content={siteConfig.locale} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={Astro.url} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(ogImageSrc, siteConfig.url)} />
