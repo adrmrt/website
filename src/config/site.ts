@@ -3,7 +3,7 @@ import ogImage from "../assets/og-image.png";
 export const siteConfig = {
   name: "Adrian Martinez",
   description:
-    "I'm a software engineer based in Switzerland, finishing my BSc in Computer Science at ZHAW. I have a passion for building software and learning new technologies.",
+    "I'm a software engineer based in Switzerland, finishing my BSc in Computer Science at the Zurich University of Applied Sciences (ZHAW). I have a passion for building software and learning new technologies.",
   url: "https://adrianmartinez.ch",
   lang: "en",
   locale: "en_US",
