@@ -1,8 +1,9 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import Schema from "../../components/seo/Schema.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 import { getCollection, render } from "astro:content";
+import { getReadingTime, getWordCount } from "../../utils/postUtils";
 
 export async function getStaticPaths() {
   const blog = await getCollection("blog");
@@ -13,18 +14,18 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content, remarkPluginFrontmatter } = await render(post);
+const { Content } = await render(post);
 const { title, description, pubDate, author, image } = post.data;
 
-const formattedDate = pubDate.toLocaleDateString("es-ES", {
+const formattedDate = pubDate.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
 
-const readingTime = remarkPluginFrontmatter?.minutesRead
-  ? `${Math.ceil(remarkPluginFrontmatter.minutesRead)} min de lectura`
-  : "";
+const wordCount = getWordCount(post);
+
+const readingTime = getReadingTime(post);
 
 const metadata = {
   title: title,
@@ -49,8 +50,9 @@ const metadata = {
     <div class="relative mx-auto max-w-3xl">
       <div class="mb-10 text-center">
         <p class="text-sm font-semibold tracking-wide text-primary uppercase">
-          {formattedDate} • {author}
-          {readingTime && ` • ${readingTime}`}
+          {formattedDate}
+          {` • ${wordCount} words`}
+          {readingTime && ` • ${readingTime} min read`}
         </p>
         <h1
           class="font-heading mt-2 text-3xl font-bold leading-tight tracking-tighter text-foreground sm:text-4xl md:text-5xl"

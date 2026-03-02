@@ -15,14 +15,14 @@ const { prev, next } = url;
 
 {
   (prev || next) && (
-    <div class:list={["flex justify-between mt-12", className]}>
+    <div class:list={["flex justify-between mt-6 mb-6", className]}>
       {prev ? (
         <a
           href={prev}
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted hover:text-foreground transition-colors"
         >
           <Icon name="tabler:arrow-left" class="w-4 h-4 mr-2" />
-          Previous
+          Prev
         </a>
       ) : (
         <span />

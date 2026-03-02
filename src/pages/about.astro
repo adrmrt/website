@@ -19,36 +19,40 @@ const optimizedImage = await getImage({
 
 <BaseLayout {metadata}>
   <link slot="head" rel="preload" href={optimizedImage.src} as="image" />
-  <Content2
-    title="About Me"
-    image={aboutImage}
-    imageAlt="Have this image until I find a better one >:)"
-  >
-    <div class="space-y-4 text-lg text-muted-foreground">
-      <p>
-        I'm Adrian, a software engineer based in Switzerland. I'm currently
-        finishing my BSc in Computer Science at ZHAW School of Engineering,
-        where I specialize in Software Engineering and Artificial Intelligence.
-      </p>
-      <p>
-        When I'm not coding, I enjoy getting outdoors — running, biking, and
-        travelling whenever I can. I also like photography, reading novels, and
-        staying on top of what's happening in the tech world.
-      </p>
-    </div>
-  </Content2>
+  <div class="min-h-[calc(100vh-72px)]">
+    <Content2
+      title="About Me"
+      image={aboutImage}
+      imageAlt="Have this image until I find a better one >:)"
+    >
+      <div class="space-y-4 text-lg text-muted-foreground">
+        <p>
+          I'm Adrian, a software engineer based in Switzerland. I'm currently
+          finishing my BSc in Computer Science at ZHAW School of Engineering,
+          where I specialize in Software Engineering and Artificial
+          Intelligence.
+        </p>
+        <p>
+          When I'm not coding, I enjoy getting outdoors — running, biking, and
+          travelling whenever I can. I also like photography, reading novels,
+          and staying on top of what's happening in the tech world.
+        </p>
+      </div>
+    </Content2>
 
-  <Content title="About this Website">
-    <div class="space-y-4 text-lg text-muted-foreground">
-      <p>
-        This site is my personal corner of the internet. I use it to share
-        things I'm learning, document projects I'm working on, and occasionally
-        write about topics that interest me. It's built with Astro and Tailwind
-        CSS and deployed on Cloudflare Pages. The source code is on my <a
-          href="https://github.com/adrmrt/website"
-          class="underline hover:text-foreground">GitHub repository</a
-        >.
-      </p>
-    </div>
-  </Content>
+    <Content title="About this Website">
+      <div class="space-y-4 text-lg text-muted-foreground">
+        <p>
+          This site is my personal corner of the internet. I use it to share
+          things I'm learning, document projects I'm working on, and
+          occasionally write about topics that interest me. It's built with
+          Astro and Tailwind CSS and deployed on Cloudflare Pages. The source
+          code is on my <a
+            href="https://github.com/adrmrt/website"
+            class="underline hover:text-foreground">GitHub repository</a
+          >.
+        </p>
+      </div>
+    </Content>
+  </div>
 </BaseLayout>
