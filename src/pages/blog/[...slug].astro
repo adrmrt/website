@@ -1,6 +1,6 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import Schema from "../../components/seo/Schema.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 
 import { getCollection, render } from "astro:content";
 
@@ -16,14 +16,21 @@ const { post } = Astro.props;
 const { Content, remarkPluginFrontmatter } = await render(post);
 const { title, description, pubDate, author, image } = post.data;
 
-const formattedDate = pubDate.toLocaleDateString("es-ES", {
+const wordCount = post.body
+  ?.replace(/^---[\s\S]*?---\s*/, "")  // remove frontmatter block
+  .replace(/#{1,6}\s/g, "")             // remove heading markers
+  .replace(/[*_`~]/g, "")               // remove markdown syntax
+  .split(/\s+/)
+  .filter(Boolean).length || 0;
+
+const formattedDate = pubDate.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
 
 const readingTime = remarkPluginFrontmatter?.minutesRead
-  ? `${Math.ceil(remarkPluginFrontmatter.minutesRead)} min de lectura`
+  ? `${Math.ceil(remarkPluginFrontmatter.minutesRead)} min read`
   : "";
 
 const metadata = {
@@ -49,7 +56,8 @@ const metadata = {
     <div class="relative mx-auto max-w-3xl">
       <div class="mb-10 text-center">
         <p class="text-sm font-semibold tracking-wide text-primary uppercase">
-          {formattedDate} • {author}
+          {formattedDate}
+          {` • ${wordCount} words`}
           {readingTime && ` • ${readingTime}`}
         </p>
         <h1
