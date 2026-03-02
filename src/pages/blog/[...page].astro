@@ -12,7 +12,7 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     .filter((post) => post.data && post.data.pubDate)
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-  return paginate(sortedPosts, { pageSize: 6 });
+  return paginate(sortedPosts, { pageSize: 10 });
 }
 
 const { page } = Astro.props;
@@ -20,30 +20,24 @@ const blog = page.data;
 
 const metadata = {
   title: "Blog",
-  description: "Latest news and updates from our team.",
+  description: "Where I share my thoughts and insights.",
 };
 ---
 
 <BaseLayout metadata={metadata}>
-  <section class="relative px-4 py-8 sm:px-6 lg:px-8 md:py-12">
-    <div class="absolute inset-0 z-0">
-      <div
-        class="absolute inset-0 bg-linear-to-br from-blue-500/5 via-transparent to-pink-500/5"
-      >
-      </div>
-    </div>
-    <div class="relative mx-auto max-w-5xl">
+  <section class="relative px-4 sm:px-6 lg:px-8">
+    <div class="relative mx-auto max-w-4xl">
       <Headline
         title="Blog"
         classes={{
-          container: "mb-12 text-center",
+          container: "mt-8 text-center",
           title:
-            "font-heading mb-4 text-4xl font-bold tracking-tight text-foreground md:text-6xl",
+            "font-heading mb-12 text-4xl font-bold tracking-tight text-foreground md:text-6xl",
           subtitle: "mx-auto max-w-3xl text-xl text-muted-foreground",
         }}
       />
 
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div class="flex flex-col gap-4">
         {blog.map((post) => <PostItem post={post} />)}
       </div>
       <Pagination page={page} />
