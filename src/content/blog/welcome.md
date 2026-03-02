@@ -1,10 +1,10 @@
 ---
 title: "Hello World v2"
-pubDate: "2026-01-19"
-description: "This is the first post on our new Astro-powered blog."
-author: "Angelo Pescetto"
+pubDate: "2026-03-02"
+description: "The very first post on my new website."
+author: "Adrian Martinez"
 category: "General"
-tags: ["welcome", "community", "astro"]
+tags: []
 ---
 
 We are excited to launch our new blog. Here we will share updates, tutorials, and more.
@@ -12,3 +12,7 @@ We are excited to launch our new blog. Here we will share updates, tutorials, an
 ## Why Astro?
 
 Astro is fast, flexible, and perfect for content-driven websites like this blog.
+
+### Test
+
+Lorem ipsum
