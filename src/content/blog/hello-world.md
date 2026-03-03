@@ -13,7 +13,7 @@ Now that I'm currently finishing my studies at ZHAW and thinking about rounding 
 
 ## Why Astro?
 
-Honestly? Just by a whim. I saw internet people talking about Astro, got curious enough to check it out, and really liked its features which made it feel like a modern Hugo. It's possible to integrate different frontend frameworks via the so-called _Islands_ architecture and extend it further by dynamic behavior using TypeScript. Furthermore, it has excellent support for Markdown content, which was something I very much appreciated about Hugo. All of this made Astro feel like a natural fit for me, and I'm looking forward to experiment with it over time.
+Honestly? Just by a whim. I saw internet people talking about Astro, got curious enough to check it out, and really liked its features which made it feel like a modern Hugo. It's possible to integrate different frontend frameworks via the so-called _Islands_ architecture and extend it further by :kekw: dynamic behavior using TypeScript. Furthermore, it has excellent support for Markdown content, which was something I very much appreciated about Hugo. All of this made Astro feel like a natural fit for me, and I'm looking forward to experiment with it over time.
 
 The result is this site: built with Astro and Tailwind CSS, deployed on Cloudflare Pages (which is free btw!), and connected to my domain `adrianmartinez.ch`.
 
