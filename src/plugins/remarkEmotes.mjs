@@ -25,7 +25,10 @@ export function remarkEmotes(emoteMap) {
         if (emote) {
           children.push({
             type: "html",
-            value: `<span class="relative inline-block group"><img src="${emote}" alt="${name}" width="24" height="24" class="not-prose inline-block align-middle" /><span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs rounded bg-card border border-border opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">:${name}:</span></span>`,
+            value: `<span class="emote-container">
+              <img src="${emote}" alt="${name}" class="emote" />
+              <span class="emote-tooltip">:${name}:</span>
+            </span>`,
           });
         } else {
           children.push({ type: "text", value: full });
