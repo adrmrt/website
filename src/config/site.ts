@@ -1,4 +1,4 @@
-import ogImage from "../assets/og-image.png";
+import ogImage from "../assets/images/about.jpeg";
 
 export const siteConfig = {
   name: "Adrian Martinez",
