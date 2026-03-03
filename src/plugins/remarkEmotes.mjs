@@ -22,6 +22,7 @@ export function remarkEmotes(emoteMap) {
           });
         }
 
+        // Replace supported emotes with associated image, otherwise keep as text
         if (emote) {
           children.push({
             type: "html",
