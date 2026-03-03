@@ -5,8 +5,8 @@ import { defineConfig } from "astro/config";
 import { remarkEmotes } from "./src/plugins/remarkEmotes.mjs";
 
 const emoteMap = {
+  clueless: "/src/assets/emotes/clueless.webp",
   kekw: "/src/assets/emotes/kekw.webp",
-  pog: "/src/assets/emotes/pog.png",
 };
 
 export default defineConfig({
