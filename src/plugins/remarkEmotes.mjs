@@ -1,9 +1,11 @@
 import { visit } from "unist-util-visit";
 
+// Matches :emote_name: pattern
 const EMOTE_REGEX = /:([a-zA-Z0-9_]+):/g;
 
 export function remarkEmotes(emoteMap) {
   return (tree) => {
+    // Walk all text nodes in the Markdown AST
     visit(tree, "text", (node, index, parent) => {
       const matches = [...node.value.matchAll(EMOTE_REGEX)];
       if (!matches.length) return;
@@ -15,6 +17,7 @@ export function remarkEmotes(emoteMap) {
         const [full, name] = match;
         const emote = emoteMap[name];
 
+        // Preserve text before the emote
         if (match.index > lastIndex) {
           children.push({
             type: "text",
@@ -35,13 +38,16 @@ export function remarkEmotes(emoteMap) {
           children.push({ type: "text", value: full });
         }
 
+        // Update lastIndex to the end of the current match
         lastIndex = match.index + full.length;
       }
 
+      // Preserve text after the last emote
       if (lastIndex < node.value.length) {
         children.push({ type: "text", value: node.value.slice(lastIndex) });
       }
 
+      // Replace the original text nodes with the new children
       parent.children.splice(index, 1, ...children);
     });
   };
