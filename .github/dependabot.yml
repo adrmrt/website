@@ -1,17 +1,25 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: "/" # package.json in root
+    directory: "/"
     schedule:
       interval: "weekly"
-    groups:
-      npm-dependencies:
-        patterns:
-          - '*'
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
     commit-message:
       prefix: "npm"
-    open-pull-requests-limit: 25
+    open-pull-requests-limit: 10
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+          - "version-update:semver-major"
