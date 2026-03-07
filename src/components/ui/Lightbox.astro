@@ -1,0 +1,35 @@
+<div id="lightbox" class="lightbox-overlay">
+  <button id="lightbox-close" aria-label="Close">&times;</button>
+  <img id="lightbox-image" src="" alt="" />
+</div>
+
+<script>
+  const overlay = document.getElementById("lightbox") as HTMLElement;
+  const lightboxImg = document.getElementById(
+    "lightbox-image",
+  ) as HTMLImageElement;
+
+  // Images need data-zoomable to work with lightbox
+  document.querySelectorAll("img[data-zoomable]").forEach((img) => {
+    (img as HTMLElement).style.cursor = "zoom-in";
+
+    img.addEventListener("click", () => {
+      lightboxImg.src =
+        (img as HTMLImageElement).currentSrc || (img as HTMLImageElement).src;
+      lightboxImg.alt = (img as HTMLImageElement).alt;
+      overlay.classList.add("active");
+      document.body.classList.add("overflow-hidden");
+    });
+  });
+
+  const close = () => {
+    overlay.classList.remove("active");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  overlay.addEventListener("click", close);
+  document.getElementById("lightbox-close")!.addEventListener("click", (e) => {
+    e.stopPropagation();
+    close();
+  });
+</script>

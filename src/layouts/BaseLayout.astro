@@ -15,6 +15,7 @@ interface Props {
 
 import Seo from "../components/seo/Seo.astro";
 import Schema from "../components/seo/Schema.astro";
+import Lightbox from "../components/ui/Lightbox.astro";
 import Navbar from "../components/layout/Navbar.astro";
 import Footer from "../components/layout/Footer.astro";
 import "../styles/global.css";
@@ -67,9 +68,7 @@ const finalIgnoreTitleTemplate = metadata?.ignoreTitleTemplate || false;
       window.localStorage.setItem("theme", theme);
     </script>
   </head>
-  <body
-    class="bg-background text-foreground antialiased"
-  >
+  <body class="bg-background text-foreground antialiased">
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 rounded-md bg-primary px-4 py-2 text-white shadow-lg ring-2 ring-white"
@@ -126,5 +125,7 @@ const finalIgnoreTitleTemplate = metadata?.ignoreTitleTemplate || false;
       // Also run on Astro view-transitions if enabled
       document.addEventListener("astro:page-load", setupObserver);
     </script>
+
+    <Lightbox />
   </body>
 </html>
