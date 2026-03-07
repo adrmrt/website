@@ -1,0 +1,17 @@
+---
+import Hero from "../components/widgets/Hero.astro";
+import { siteConfig } from "../config/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const metadata = {
+  title: "Projects",
+  description: "A showcase of my projects and work.",
+};
+---
+
+<BaseLayout {metadata}>
+  <Hero
+    title="Projects"
+    description="🚧 This page is currently under construction. 🚧"
+  />
+</BaseLayout>

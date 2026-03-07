@@ -1,0 +1,56 @@
+---
+import MapGlobe from "../components/map/MapGlobe";
+import Button from "../components/ui/Button.astro";
+import { siteConfig } from "../config/site";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang={siteConfig.lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adrian's Map</title>
+  </head>
+  <body>
+    <div class="map-wrapper">
+      <MapGlobe client:only="react" />
+
+      <div class="home-btn">
+        <Button href="/" variant="secondary" size="sm">← Home</Button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #030303;
+  }
+
+  .map-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .home-btn {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+  }
+
+  .home-btn a {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .home-btn a:hover {
+    background: #2a2a2a !important;
+  }
+</style>
