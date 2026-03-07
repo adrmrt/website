@@ -13,6 +13,7 @@ const {
   description = [],
   image,
   imageAlt = "",
+  imageTitle,
   actions = [],
   isReversed = false,
   id,
@@ -122,7 +123,9 @@ const { container: containerClassProp = "", ...otherClasses } = classes;
             <Image
               src={image}
               alt={imageAlt}
+              title={imageTitle}
               class="mx-auto w-full rounded-lg bg-gray-500 shadow-lg"
+              data-zoomable
             />
           </div>
         )
