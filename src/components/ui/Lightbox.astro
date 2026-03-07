@@ -1,6 +1,9 @@
 <div id="lightbox" class="lightbox-overlay">
   <button id="lightbox-close" aria-label="Close">&times;</button>
-  <img id="lightbox-image" src="" alt="" />
+  <div class="lightbox-content">
+    <img id="lightbox-image" src="" alt="" />
+    <p id="lightbox-caption"></p>
+  </div>
 </div>
 
 <script>
@@ -8,6 +11,9 @@
   const lightboxImg = document.getElementById(
     "lightbox-image",
   ) as HTMLImageElement;
+  const lightboxCaption = document.getElementById(
+    "lightbox-caption",
+  ) as HTMLElement;
 
   // Images need data-zoomable to work with lightbox
   document.querySelectorAll("img[data-zoomable]").forEach((img) => {
@@ -17,6 +23,11 @@
       lightboxImg.src =
         (img as HTMLImageElement).currentSrc || (img as HTMLImageElement).src;
       lightboxImg.alt = (img as HTMLImageElement).alt;
+
+      const caption = (img as HTMLImageElement).title;
+      lightboxCaption.textContent = caption || "";
+      lightboxCaption.style.display = caption ? "block" : "none";
+
       overlay.classList.add("active");
       document.body.classList.add("overflow-hidden");
     });
