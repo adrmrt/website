@@ -57,6 +57,7 @@ export interface ContentProps extends HeadlineProps {
   content?: string;
   image?: ImageMetadata;
   imageAlt?: string;
+  imageTitle?: string;
   items?: Feature[];
   isReversed?: boolean;
   isAfterContent?: boolean;
