@@ -1,18 +1,33 @@
 ---
+import TypewriterText from "../components/ui/TypewriterText.astro";
 import Hero from "../components/widgets/Hero.astro";
 import { siteConfig } from "../config/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
 const metadata = {
   title: `${siteConfig.name}`,
   description:
     "Hey, it's Adrian. I build software and tools. This is my little corner of the internet.",
   ignoreTitleTemplate: true,
 };
+
+const typewriterTexts = [
+  "Adrian",
+  "a developer",
+  "building things",
+  "enjoying a cup of tea",
+  "a firm believer in open source",
+  "dreaming of sunlight and beaches",
+  "thinking of my next side project",
+  "petting my cats",
+  "happy to help",
+  "reading the docs",
+]
 ---
 
 <BaseLayout {metadata}>
   <Hero
-    title={`Hi, I'm <span class="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Adrian</span>`}
+    title={`Hi, I'm <span class="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"><span id="typewriter-target"></span><span class="typewriter-cursor" aria-hidden="true">|</span></span>`}
     tagline=""
     description={`${siteConfig.description}`}
     actions={[
@@ -29,5 +44,9 @@ const metadata = {
         icon: "lucide:linkedin",
       },
     ]}
+  />
+  <TypewriterText
+    texts={typewriterTexts}
+    targetId="typewriter-target"
   />
 </BaseLayout>

@@ -1,0 +1,65 @@
+---
+interface Props {
+  texts: string[];
+  targetId?: string;
+  typeSpeed?: number;
+  deleteSpeed?: number;
+  pauseDuration?: number;
+}
+
+const {
+  texts,
+  targetId = "typewriter-target",
+  typeSpeed = 100,
+  deleteSpeed = 60,
+  pauseDuration = 1800,
+} = Astro.props;
+---
+
+<script define:vars={{ texts, targetId, typeSpeed, deleteSpeed, pauseDuration }}
+>
+  const el = document.getElementById(targetId);
+  if (!el) throw new Error(`TypewriterText: no element with id "${targetId}"`);
+
+  let currentIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function pickNext() {
+    let next;
+    do {
+      next = Math.floor(Math.random() * texts.length);
+    } while (texts.length > 1 && next === currentIndex);
+    return next;
+  }
+
+  function tick() {
+    const current = texts[currentIndex];
+
+    if (!isDeleting) {
+      // Adding one character at a time
+      el.textContent = current.slice(0, ++charIndex);
+      if (charIndex === current.length) {
+        isDeleting = true;
+        setTimeout(tick, pauseDuration);
+        return;
+      }
+    } else {
+      // Deleting one character at a time
+      el.textContent = current.slice(0, --charIndex);
+      if (charIndex === 0) {
+        isDeleting = false;
+        currentIndex = pickNext();
+        setTimeout(tick, typeSpeed);
+        return;
+      }
+    }
+
+    // Alternating delay between keystrokes to make it feel more human
+    const jitter = Math.random() * 40 - 20;
+    setTimeout(tick, (isDeleting ? deleteSpeed : typeSpeed) + jitter);
+  }
+
+  // Short delay so the page can load
+  setTimeout(tick, 600);
+</script>
