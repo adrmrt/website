@@ -55,6 +55,7 @@ const {
       }
     }
 
+    // Alternating delay between keystrokes to make it feel more human
     const jitter = Math.random() * 40 - 20;
     setTimeout(tick, (isDeleting ? deleteSpeed : typeSpeed) + jitter);
   }
