@@ -1,0 +1,121 @@
+---
+// Minimal, chrome-light shell for full-height in-browser tools (see /tools).
+// Unlike BaseLayout, it skips the navbar/footer/background glow so the tool
+// gets the full viewport — just a slim topbar with a way back home.
+interface Props {
+  title: string;
+  description: string;
+  brand?: string;
+}
+
+import Seo from "../components/seo/Seo.astro";
+import ThemeInit from "../components/ThemeInit.astro";
+import { Icon } from "astro-icon/components";
+import { siteConfig } from "../config/site";
+import "../styles/global.css";
+
+const { title, description, brand = title } = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.lang}>
+  <head>
+    <Seo title={title} description={description} />
+    <ThemeInit />
+  </head>
+  <body class="bg-background text-foreground antialiased">
+    <div class="tool-app">
+      <div class="tool-topbar">
+        <a
+          href="/"
+          aria-label={`Back to ${siteConfig.name}`}
+          class="tool-home-btn"
+        >
+          <Icon name="tabler:home" class="h-4 w-4" />
+        </a>
+        <div class="tool-divider"></div>
+        <div class="tool-brand">{brand}</div>
+        <slot name="topbar" />
+      </div>
+
+      <slot />
+    </div>
+
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .tool-app * {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+
+      .tool-app {
+        --surface-3: color-mix(in srgb, var(--foreground) 8%, var(--muted));
+        --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+        --primary-border: color-mix(in srgb, var(--primary) 20%, transparent);
+        --shadow:
+          0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent),
+          0 8px 24px color-mix(in srgb, var(--primary) 14%, transparent);
+        --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .tool-topbar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 14px;
+        height: 46px;
+        flex-shrink: 0;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tool-home-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        color: var(--muted-foreground);
+        flex-shrink: 0;
+        transition:
+          background-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .tool-home-btn:hover {
+        background: var(--muted);
+        color: var(--foreground);
+      }
+
+      .tool-brand {
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        font-size: 13px;
+        color: var(--foreground);
+        white-space: nowrap;
+      }
+
+      .tool-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+    </style>
+  </body>
+</html>
