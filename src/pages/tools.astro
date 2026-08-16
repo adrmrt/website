@@ -15,13 +15,13 @@ const metadata = {
 
 <BaseLayout {metadata}>
   <div class="min-h-[calc(100vh-72px)]">
-    <WidgetWrapper containerClass="py-16 md:py-24">
+    <WidgetWrapper>
       <Headline
         title="Tools"
-        subtitle="Small in-browser apps I've built for myself — no accounts, no servers, just useful."
+        subtitle="Small in-browser apps I've built for myself."
         classes={{ container: "max-w-2xl mx-auto text-center" }}
       />
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         {
           tools.map((tool) => (
             <Card
@@ -34,15 +34,9 @@ const metadata = {
               <h3 class="text-xl font-bold text-foreground mb-3">
                 {tool.title}
               </h3>
-              <p class="text-muted-foreground text-sm mb-6">
+              <p class="text-muted-foreground text-sm mb-2">
                 {tool.description}
               </p>
-              <span class="text-primary font-semibold flex items-center gap-2 group-hover:underline">
-                Open
-                <span class="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </span>
             </Card>
           ))
         }

@@ -4,7 +4,8 @@ import { getCollection } from "astro:content";
 import PostItem from "../../components/blog/PostItem.astro";
 import Pagination from "../../components/ui/Pagination.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Content from "../../components/widgets/Content.astro";
+import WidgetWrapper from "../../components/widgets/WidgetWrapper.astro";
+import Headline from "../../components/ui/Headline.astro";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const blogEntries = await getCollection("blog");
@@ -25,14 +26,17 @@ const metadata = {
 ---
 
 <BaseLayout metadata={metadata}>
-  <section class="relative px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-72px)]">
-    <div class="relative mx-auto max-w-4xl">
-      <Content title="Blog" />
-
-      <div class="flex flex-col gap-4 mb-4">
+  <div class="min-h-[calc(100vh-72px)]">
+    <WidgetWrapper>
+      <Headline
+        title="Blog"
+        subtitle="Musings and write-ups I've put together."
+        classes={{ container: "max-w-2xl mx-auto text-center" }}
+      />
+      <div class="flex flex-col gap-4 mb-4 mt-12">
         {blog.map((post) => <PostItem post={post} />)}
       </div>
       <Pagination page={page} />
-    </div>
-  </section>
+    </WidgetWrapper>
+  </div>
 </BaseLayout>
