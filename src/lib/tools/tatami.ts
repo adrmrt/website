@@ -14,7 +14,6 @@ interface Placement {
   y: number;
   w: number;
   h: number;
-  clip?: { x: number; y: number; w: number; h: number };
 }
 
 export function initTatami() {
@@ -292,7 +291,7 @@ export function initTatami() {
           row = i % rows;
           col = cols - 1 - colFromRight;
         }
-        const scale = Math.max(cellW / entry.w, cellH / entry.h);
+        const scale = Math.min(cellW / entry.w, cellH / entry.h);
         const w = entry.w * scale;
         const h = entry.h * scale;
         const cellX = col * (cellW + gap);
@@ -303,7 +302,6 @@ export function initTatami() {
           y: cellY + (cellH - h) / 2,
           w,
           h,
-          clip: { x: cellX, y: cellY, w: cellW, h: cellH },
         });
       });
       cw = cols * cellW + (cols - 1) * gap;
@@ -314,16 +312,7 @@ export function initTatami() {
     workCanvas.height = Math.max(1, Math.round(ch));
     ctx.clearRect(0, 0, workCanvas.width, workCanvas.height);
     placements.forEach((p) => {
-      if (p.clip) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(p.clip.x, p.clip.y, p.clip.w, p.clip.h);
-        ctx.clip();
-        ctx.drawImage(p.entry.img, p.x, p.y, p.w, p.h);
-        ctx.restore();
-      } else {
-        ctx.drawImage(p.entry.img, p.x, p.y, p.w, p.h);
-      }
+      ctx.drawImage(p.entry.img, p.x, p.y, p.w, p.h);
     });
 
     const dataUrl = workCanvas.toDataURL("image/png");
