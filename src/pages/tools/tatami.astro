@@ -1,0 +1,523 @@
+---
+import ToolLayout from "../../layouts/ToolLayout.astro";
+
+const metadata = {
+  title: "Tatami",
+  description:
+    "Arrange and stitch screenshots into a single image, right in your browser.",
+};
+---
+
+<ToolLayout title={metadata.title} description={metadata.description}>
+  <Fragment slot="topbar">
+    <div class="segmented" role="group" aria-label="Arrange mode">
+      <button class="seg-btn active" data-mode="row">Row <kbd>1</kbd></button>
+      <button class="seg-btn" data-mode="column">Column <kbd>2</kbd></button>
+      <button class="seg-btn" data-mode="grid">Grid <kbd>3</kbd></button>
+    </div>
+
+    <div class="cols-control disabled" id="colsControl">
+      <label>Columns</label>
+      <div class="stepper">
+        <button id="colsMinus" aria-label="Fewer columns" disabled>−</button>
+        <div class="stepper-val" id="colsVal">2</div>
+        <button id="colsPlus" aria-label="More columns" disabled>+</button>
+      </div>
+    </div>
+
+    <div class="direction-toggle disabled" id="directionToggle">
+      <button class="dir-btn active" data-dir="western" disabled>
+        <span class="glyph">→↓</span> Western
+      </button>
+      <button class="dir-btn" data-dir="japanese" disabled>
+        <span class="glyph">↓←</span> Japanese
+      </button>
+    </div>
+
+    <div class="tool-divider"></div>
+
+    <div class="gap-control">
+      <label for="gapSlider">Gap</label>
+      <input type="range" id="gapSlider" min="0" max="40" value="0" />
+      <div class="gap-value flush" id="gapValue">0px</div>
+    </div>
+
+    <div class="topbar-hints">
+      <span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> Mode</span>
+      <span><kbd>⌘V</kbd> Paste</span>
+      <span><kbd>C</kbd> Copy</span>
+    </div>
+  </Fragment>
+
+  <div class="workspace">
+    <div class="rail">
+      <div class="rail-header">
+        <span class="rail-title">Images</span>
+        <span class="count" id="imgCount">0</span>
+      </div>
+      <div class="drop-zone" id="dropZone">
+        Drop images here<br />or <kbd>⌘V</kbd> to paste
+      </div>
+      <div class="rail-list" id="railList"></div>
+    </div>
+
+    <div class="preview-pane">
+      <div class="preview-canvas-area" id="previewArea">
+        <div class="empty-state" id="emptyState">
+          <div class="big">⌘V</div>
+          Paste a few screenshots, or drop image files onto the rail to start
+          composing.
+        </div>
+        <img id="resultImg" alt="Composed result" style="display:none;" />
+      </div>
+      <div class="statusbar">
+        <span><b id="statCount">0</b> images</span>
+        <div class="stat-sep"></div>
+        <span id="statDims">— × —</span>
+        <div class="stat-sep"></div>
+        <span id="statSize">— KB</span>
+        <div class="stat-sep"></div>
+        <span>Render <b id="statTime">—</b> ms</span>
+        <span class="flash-msg" id="flashMsg"></span>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="workCanvas" style="display:none;"></canvas>
+
+  <script>
+    import { initTatami } from "../../lib/tools/tatami";
+    initTatami();
+  </script>
+
+  <style>
+    .workspace {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    /* ---------- Topbar controls ---------- */
+    .segmented {
+      display: flex;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .seg-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--muted-foreground);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .seg-btn:hover {
+      color: var(--foreground);
+    }
+    .seg-btn.active {
+      background: var(--foreground);
+      color: var(--background);
+      font-weight: 700;
+    }
+    .seg-btn kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      opacity: 0.7;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      padding: 0 3px;
+      line-height: 1.4;
+    }
+
+    .tool-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .gap-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .gap-control label {
+      color: var(--muted-foreground);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .gap-control input[type="range"] {
+      width: 90px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .gap-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      width: 42px;
+      color: var(--foreground);
+    }
+    .gap-value.flush {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .direction-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      transition: opacity 0.15s ease;
+    }
+    .direction-toggle.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .dir-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--muted);
+      border: 1px solid var(--border);
+      color: var(--muted-foreground);
+      font-size: 11.5px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+    }
+    .dir-btn.active {
+      border-color: var(--primary-border);
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+    .dir-btn .glyph {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+    .dir-btn.active .glyph {
+      color: var(--primary);
+    }
+
+    .cols-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      transition: opacity 0.15s ease;
+    }
+    .cols-control.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .cols-control label {
+      color: var(--muted-foreground);
+      font-size: 12px;
+    }
+    .stepper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .stepper button {
+      appearance: none;
+      border: none;
+      background: var(--muted);
+      color: var(--foreground);
+      width: 22px;
+      height: 24px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .stepper button:hover {
+      background: var(--surface-3);
+    }
+    .stepper .stepper-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      width: 20px;
+      text-align: center;
+      color: var(--foreground);
+    }
+
+    .topbar-hints {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+      color: var(--muted-foreground);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+    .topbar-hints kbd {
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 3px;
+      color: var(--foreground);
+    }
+
+    /* ---------- Rail ---------- */
+    .rail {
+      width: clamp(160px, 42vw, 240px);
+      flex-shrink: 0;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .rail-header {
+      padding: 10px 12px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-shrink: 0;
+    }
+    .rail-header .count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted-foreground);
+    }
+    .rail-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted-foreground);
+      font-weight: 600;
+    }
+
+    .rail-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .drop-zone {
+      margin: 6px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 32px 10px;
+      min-height: 96px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 11.5px;
+      flex-shrink: 0;
+      transition:
+        border-color 0.15s ease,
+        color 0.15s ease,
+        background-color 0.15s ease;
+    }
+    .drop-zone.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+    .drop-zone kbd {
+      font-family: var(--font-mono);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0 3px;
+      color: var(--foreground);
+    }
+
+    /* ---------- Preview pane ---------- */
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .preview-canvas-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: auto;
+      background-image:
+        linear-gradient(45deg, var(--muted) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--muted) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--muted) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--muted) 75%);
+      background-size: 16px 16px;
+      background-position:
+        0 0,
+        0 8px,
+        8px -8px,
+        -8px 0px;
+      background-color: var(--background);
+    }
+
+    .preview-canvas-area img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 4px;
+    }
+
+    .empty-state {
+      color: var(--muted-foreground);
+      text-align: center;
+      font-size: 13px;
+      max-width: 260px;
+    }
+    .empty-state .big {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      color: var(--foreground);
+      margin-bottom: 10px;
+    }
+
+    .statusbar {
+      flex-shrink: 0;
+      height: 34px;
+      border-top: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--muted-foreground);
+    }
+    .statusbar b {
+      color: var(--foreground);
+      font-weight: 600;
+    }
+    .statusbar .stat-sep {
+      width: 1px;
+      height: 12px;
+      background: var(--border);
+    }
+
+    .flash-msg {
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+    }
+    .flash-msg.ok {
+      color: var(--primary);
+    }
+    .flash-msg.err {
+      color: var(--muted-foreground);
+    }
+  </style>
+
+  <!--
+    The rail thumbnails (.thumb and everything inside) are built at runtime
+    via document.createElement in src/lib/tools/tatami.ts, so they never
+    carry Astro's scoped-style data-astro-cid attribute. A scoped <style>
+    block's selectors require that attribute on every element they match,
+    so these rules must stay in an is:global block or they silently never
+    apply to the dynamically created nodes.
+  -->
+  <style is:global>
+    .thumb {
+      position: relative;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--muted);
+      overflow: hidden;
+      cursor: grab;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.15s ease;
+    }
+    .thumb:active {
+      cursor: grabbing;
+    }
+    .thumb.dragging {
+      opacity: 0.4;
+    }
+    .thumb.drop-target {
+      border-color: var(--primary);
+    }
+    .thumb-image {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .thumb img {
+      display: block;
+      width: 100%;
+      height: 96px;
+      object-fit: contain;
+      background: var(--surface-3);
+    }
+    .thumb .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+      padding: 6px 8px;
+    }
+    .thumb .idx {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted-foreground);
+      flex-shrink: 0;
+    }
+    .thumb .dims {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted-foreground);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .thumb .remove {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      background: rgb(0 0 0 / 55%);
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1;
+      padding: 0;
+    }
+    .thumb .remove:hover {
+      background: rgb(0 0 0 / 75%);
+    }
+  </style>
+</ToolLayout>
