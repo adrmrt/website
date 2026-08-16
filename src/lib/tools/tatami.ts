@@ -37,7 +37,6 @@ export function initTatami() {
   const statDims = document.getElementById("statDims") as HTMLElement;
   const statSize = document.getElementById("statSize") as HTMLElement;
   const statTime = document.getElementById("statTime") as HTMLElement;
-  const copyBtn = document.getElementById("copyBtn") as HTMLButtonElement;
   const flashMsg = document.getElementById("flashMsg") as HTMLElement;
   const gapSlider = document.getElementById("gapSlider") as HTMLInputElement;
   const gapValue = document.getElementById("gapValue") as HTMLElement;
@@ -241,7 +240,6 @@ export function initTatami() {
     if (images.length === 0) {
       emptyState.style.display = "block";
       resultImg.style.display = "none";
-      copyBtn.disabled = true;
       statDims.textContent = "— × —";
       statSize.textContent = "— KB";
       statTime.textContent = "—";
@@ -319,7 +317,6 @@ export function initTatami() {
     resultImg.src = dataUrl;
     resultImg.style.display = "block";
     emptyState.style.display = "none";
-    copyBtn.disabled = false;
 
     const t1 = performance.now();
     const approxBytes = Math.round(
@@ -354,7 +351,6 @@ export function initTatami() {
       flash("Clipboard blocked in preview — right-click the image instead", false);
     }
   }
-  copyBtn.addEventListener("click", copyResult);
 
   renderRail();
   composite();
