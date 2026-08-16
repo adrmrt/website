@@ -4,6 +4,7 @@ export type GridDirection = "western" | "japanese";
 interface ImageEntry {
   id: number;
   img: HTMLImageElement;
+  url: string;
   w: number;
   h: number;
 }
@@ -57,6 +58,7 @@ export function initTatami() {
       images.push({
         id: nextId++,
         img: el,
+        url,
         w: el.naturalWidth,
         h: el.naturalHeight,
       });
@@ -100,75 +102,109 @@ export function initTatami() {
     }
   });
 
+  interface RailRow {
+    row: HTMLDivElement;
+    idxEl: HTMLDivElement;
+    rm: HTMLButtonElement;
+  }
+
+  const railRows = new Map<number, RailRow>();
+
+  function indexOfId(id: number): number {
+    return images.findIndex((e) => e.id === id);
+  }
+
+  function createRailRow(entry: ImageEntry): RailRow {
+    const row = document.createElement("div");
+    row.className = "thumb";
+    row.draggable = true;
+
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "thumb-image";
+
+    const im = document.createElement("img");
+    im.src = entry.img.src;
+    imageWrap.appendChild(im);
+
+    const rm = document.createElement("button");
+    rm.className = "remove";
+    rm.textContent = "×";
+    rm.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      const i = indexOfId(entry.id);
+      if (i === -1) return;
+      URL.revokeObjectURL(images[i].url);
+      images.splice(i, 1);
+      renderRail();
+      scheduleRender();
+    });
+    imageWrap.appendChild(rm);
+
+    row.appendChild(imageWrap);
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const idxEl = document.createElement("div");
+    idxEl.className = "idx";
+    const dims = document.createElement("div");
+    dims.className = "dims";
+    dims.textContent = entry.w + "×" + entry.h;
+    meta.appendChild(idxEl);
+    meta.appendChild(dims);
+    row.appendChild(meta);
+
+    row.addEventListener("dragstart", function () {
+      dragSrcIndex = indexOfId(entry.id);
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", function () {
+      row.classList.remove("dragging");
+    });
+    row.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      row.classList.add("drop-target");
+    });
+    row.addEventListener("dragleave", function () {
+      row.classList.remove("drop-target");
+    });
+    row.addEventListener("drop", function (e) {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      const targetIndex = indexOfId(entry.id);
+      if (dragSrcIndex === null || dragSrcIndex === targetIndex) return;
+      const moved = images.splice(dragSrcIndex, 1)[0];
+      images.splice(targetIndex, 0, moved);
+      dragSrcIndex = null;
+      renderRail();
+      scheduleRender();
+    });
+
+    return { row, idxEl, rm };
+  }
+
   function renderRail() {
     imgCount.textContent = String(images.length);
-    railList.innerHTML = "";
+
+    const seen = new Set<number>();
     images.forEach((entry, i) => {
-      const row = document.createElement("div");
-      row.className = "thumb";
-      row.draggable = true;
-      row.dataset.index = String(i);
-
-      const imageWrap = document.createElement("div");
-      imageWrap.className = "thumb-image";
-
-      const im = document.createElement("img");
-      im.src = entry.img.src;
-      imageWrap.appendChild(im);
-
-      const rm = document.createElement("button");
-      rm.className = "remove";
-      rm.textContent = "×";
-      rm.setAttribute("aria-label", "Remove image " + (i + 1));
-      rm.addEventListener("click", function (ev) {
-        ev.stopPropagation();
-        images.splice(i, 1);
-        renderRail();
-        scheduleRender();
-      });
-      imageWrap.appendChild(rm);
-
-      row.appendChild(imageWrap);
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      const idxEl = document.createElement("div");
-      idxEl.className = "idx";
-      idxEl.textContent = "#" + (i + 1);
-      const dims = document.createElement("div");
-      dims.className = "dims";
-      dims.textContent = entry.w + "×" + entry.h;
-      meta.appendChild(idxEl);
-      meta.appendChild(dims);
-      row.appendChild(meta);
-
-      row.addEventListener("dragstart", function () {
-        dragSrcIndex = i;
-        row.classList.add("dragging");
-      });
-      row.addEventListener("dragend", function () {
-        row.classList.remove("dragging");
-      });
-      row.addEventListener("dragover", function (e) {
-        e.preventDefault();
-        row.classList.add("drop-target");
-      });
-      row.addEventListener("dragleave", function () {
-        row.classList.remove("drop-target");
-      });
-      row.addEventListener("drop", function (e) {
-        e.preventDefault();
-        row.classList.remove("drop-target");
-        if (dragSrcIndex === null || dragSrcIndex === i) return;
-        const moved = images.splice(dragSrcIndex, 1)[0];
-        images.splice(i, 0, moved);
-        dragSrcIndex = null;
-        renderRail();
-        scheduleRender();
-      });
-
-      railList.appendChild(row);
+      seen.add(entry.id);
+      let entryRow = railRows.get(entry.id);
+      if (!entryRow) {
+        entryRow = createRailRow(entry);
+        railRows.set(entry.id, entryRow);
+      }
+      entryRow.row.dataset.index = String(i);
+      entryRow.idxEl.textContent = "#" + (i + 1);
+      entryRow.rm.setAttribute("aria-label", "Remove image " + (i + 1));
+      railList.appendChild(entryRow.row);
     });
+
+    for (const [id, entryRow] of railRows) {
+      if (!seen.has(id)) {
+        entryRow.row.remove();
+        railRows.delete(id);
+      }
+    }
   }
 
   /* ---------- Mode / direction / gap controls ---------- */
@@ -184,6 +220,9 @@ export function initTatami() {
     const isGrid = m === "grid";
     colsControl.classList.toggle("disabled", !isGrid);
     directionToggle.classList.toggle("disabled", !isGrid);
+    colsMinus.disabled = !isGrid;
+    colsPlus.disabled = !isGrid;
+    dirButtons.forEach((b) => (b.disabled = !isGrid));
     scheduleRender();
   }
 
@@ -340,6 +379,7 @@ export function initTatami() {
 
   async function copyResult() {
     if (images.length === 0) return;
+    composite();
     try {
       const blob = await new Promise<Blob | null>((resolve) =>
         workCanvas.toBlob(resolve, "image/png"),

@@ -19,17 +19,17 @@ const metadata = {
     <div class="cols-control disabled" id="colsControl">
       <label>Columns</label>
       <div class="stepper">
-        <button id="colsMinus" aria-label="Fewer columns">−</button>
+        <button id="colsMinus" aria-label="Fewer columns" disabled>−</button>
         <div class="stepper-val" id="colsVal">2</div>
-        <button id="colsPlus" aria-label="More columns">+</button>
+        <button id="colsPlus" aria-label="More columns" disabled>+</button>
       </div>
     </div>
 
     <div class="direction-toggle disabled" id="directionToggle">
-      <button class="dir-btn active" data-dir="western">
+      <button class="dir-btn active" data-dir="western" disabled>
         <span class="glyph">→↓</span> Western
       </button>
-      <button class="dir-btn" data-dir="japanese">
+      <button class="dir-btn" data-dir="japanese" disabled>
         <span class="glyph">↓←</span> Japanese
       </button>
     </div>
@@ -142,6 +142,13 @@ const metadata = {
       border-radius: 3px;
       padding: 0 3px;
       line-height: 1.4;
+    }
+
+    .tool-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
     }
 
     .gap-control {
@@ -273,7 +280,7 @@ const metadata = {
 
     /* ---------- Rail ---------- */
     .rail {
-      width: 240px;
+      width: clamp(160px, 42vw, 240px);
       flex-shrink: 0;
       background: var(--card);
       border-right: 1px solid var(--border);

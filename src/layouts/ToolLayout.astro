@@ -44,6 +44,7 @@ const { title, description, brand = title } = Astro.props;
     <style>
       body {
         height: 100vh;
+        height: 100dvh;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -80,6 +81,7 @@ const { title, description, brand = title } = Astro.props;
         padding: 0 14px;
         height: 46px;
         flex-shrink: 0;
+        overflow-x: auto;
         background: var(--card);
         border-bottom: 1px solid var(--border);
       }
