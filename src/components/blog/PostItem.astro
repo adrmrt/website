@@ -14,11 +14,11 @@ const readingTime = getReadingTime(post);
 ---
 
 <article
-  class="reveal group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+  class="reveal group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/50 hover:bg-muted/50 hover:shadow-md"
 >
   <a href={`/blog/${post.id}`} class="flex flex-1 flex-col gap-3 p-5">
     <div class="flex-1">
-      <p class="text-xl font-semibold text-foreground group-hover:underline">
+      <p class="text-xl font-semibold text-foreground">
         {post.data.title}
       </p>
     </div>
