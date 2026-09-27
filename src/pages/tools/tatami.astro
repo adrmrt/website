@@ -55,9 +55,13 @@ const metadata = {
         <span class="rail-title">Images</span>
         <span class="count" id="imgCount">0</span>
       </div>
-      <div class="drop-zone" id="dropZone">
-        Drop images here<br />or <kbd>⌘V</kbd> to paste
-      </div>
+      <label class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/*" multiple hidden />
+        <span class="hint-fine"
+          >Drop images here<br />or <kbd>⌘V</kbd> to paste</span
+        >
+        <span class="hint-coarse">Tap to add images</span>
+      </label>
       <div class="rail-list" id="railList"></div>
     </div>
 
@@ -65,9 +69,10 @@ const metadata = {
       <div class="preview-canvas-area" id="previewArea">
         <div class="empty-state" id="emptyState">
           <div class="big">⌘V</div>
-          Paste a few screenshots, or drop image files onto the rail to start
-          composing.
+          Paste a few screenshots, or drop image files anywhere to start composing.
         </div>
+        <canvas id="workCanvas" aria-hidden="true" style="display:none;"
+        ></canvas>
         <img id="resultImg" alt="Composed result" style="display:none;" />
       </div>
       <div class="statusbar">
@@ -83,8 +88,6 @@ const metadata = {
     </div>
   </div>
 
-  <canvas id="workCanvas" style="display:none;"></canvas>
-
   <script>
     import { initTatami } from "../../lib/tools/tatami";
     initTatami();
@@ -95,6 +98,40 @@ const metadata = {
       flex: 1;
       display: flex;
       min-height: 0;
+    }
+
+    /* Phones: preview on top, rail as a short strip below it. */
+    @media (max-width: 640px) {
+      .workspace {
+        flex-direction: column-reverse;
+      }
+      .rail {
+        width: auto;
+        height: 38%;
+        border-right: none;
+        border-top: 1px solid var(--border);
+      }
+      .drop-zone {
+        padding: 12px 10px;
+        min-height: 0;
+      }
+      .preview-canvas-area {
+        padding: 12px;
+      }
+    }
+
+    /* Keyboard hints are noise on touch; the drop zone becomes a file picker. */
+    .hint-coarse {
+      display: none;
+    }
+    @media (pointer: coarse) {
+      .topbar-hints,
+      .hint-fine {
+        display: none;
+      }
+      .hint-coarse {
+        display: inline;
+      }
     }
 
     /* ---------- Topbar controls ---------- */
@@ -319,6 +356,7 @@ const metadata = {
     }
 
     .drop-zone {
+      cursor: pointer;
       margin: 6px;
       border: 1px dashed var(--border);
       border-radius: 8px;
@@ -380,6 +418,7 @@ const metadata = {
       background-color: var(--background);
     }
 
+    .preview-canvas-area canvas,
     .preview-canvas-area img {
       max-width: 100%;
       max-height: 100%;

@@ -28,11 +28,12 @@ export function initTatami() {
   let renderScheduled = false;
 
   const railList = document.getElementById("railList") as HTMLDivElement;
-  const dropZone = document.getElementById("dropZone") as HTMLDivElement;
+  const dropZone = document.getElementById("dropZone") as HTMLLabelElement;
+  const fileInput = document.getElementById("fileInput") as HTMLInputElement;
   const emptyState = document.getElementById("emptyState") as HTMLDivElement;
-  const resultImg = document.getElementById("resultImg") as HTMLImageElement;
   const workCanvas = document.getElementById("workCanvas") as HTMLCanvasElement;
   const ctx = workCanvas.getContext("2d")!;
+  const resultImg = document.getElementById("resultImg") as HTMLImageElement;
   const imgCount = document.getElementById("imgCount") as HTMLElement;
   const statCount = document.getElementById("statCount") as HTMLElement;
   const statDims = document.getElementById("statDims") as HTMLElement;
@@ -103,6 +104,11 @@ export function initTatami() {
     for (const f of files) {
       if (f.type.startsWith("image/")) addImageFromBlob(f);
     }
+  });
+
+  fileInput.addEventListener("change", function () {
+    for (const f of fileInput.files || []) addImageFromBlob(f);
+    fileInput.value = "";
   });
 
   interface RailRow {
@@ -280,10 +286,19 @@ export function initTatami() {
     });
   }
 
+  let lastRenderId = 0;
+  let resultUrl = "";
+
+  function showPreview(el: HTMLElement | null) {
+    workCanvas.style.display = el === workCanvas ? "block" : "none";
+    resultImg.style.display = el === resultImg ? "block" : "none";
+  }
+
   function composite() {
     if (images.length === 0) {
       emptyState.style.display = "block";
-      resultImg.style.display = "none";
+      lastRenderId++;
+      showPreview(null);
       statDims.textContent = "— × —";
       statSize.textContent = "— KB";
       statTime.textContent = "—";
@@ -357,17 +372,27 @@ export function initTatami() {
       ctx.drawImage(p.entry.img, p.x, p.y, p.w, p.h);
     });
 
-    const dataUrl = workCanvas.toDataURL("image/png");
-    resultImg.src = dataUrl;
-    resultImg.style.display = "block";
+    showPreview(workCanvas);
     emptyState.style.display = "none";
-
     const t1 = performance.now();
-    const approxBytes = Math.round(
-      (dataUrl.length - "data:image/png;base64,".length) * 0.75,
-    );
+
+    // Canvas shows every change instantly. Once the PNG is encoded (async, never
+    // blocking a render), swap in an <img> of the same pixels so long-press /
+    // right-click offers the native "Copy image" menu, which canvas lacks.
+    const renderId = ++lastRenderId;
+    statSize.textContent = "… KB";
+    workCanvas.toBlob((blob) => {
+      if (!blob || renderId !== lastRenderId) return;
+      statSize.textContent = (blob.size / 1024).toFixed(1) + " KB";
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
+      resultUrl = URL.createObjectURL(blob);
+      resultImg.onload = () => {
+        if (renderId === lastRenderId) showPreview(resultImg);
+      };
+      resultImg.src = resultUrl;
+    }, "image/png");
+
     statDims.textContent = workCanvas.width + " × " + workCanvas.height;
-    statSize.textContent = (approxBytes / 1024).toFixed(1) + " KB";
     statTime.textContent = (t1 - t0).toFixed(1);
     statCount.textContent = String(images.length);
   }
@@ -384,7 +409,6 @@ export function initTatami() {
 
   async function copyResult() {
     if (images.length === 0) return;
-    composite();
     try {
       const blob = await new Promise<Blob | null>((resolve) =>
         workCanvas.toBlob(resolve, "image/png"),
@@ -395,7 +419,10 @@ export function initTatami() {
       ]);
       flash("Copied ✓", true);
     } catch {
-      flash("Clipboard blocked — right-click the image to copy", false);
+      flash(
+        "Clipboard blocked — right-click or long-press the image to copy",
+        false,
+      );
     }
   }
 
