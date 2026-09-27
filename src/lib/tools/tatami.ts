@@ -18,7 +18,7 @@ interface Placement {
 }
 
 export function initTatami() {
-  let images: ImageEntry[] = [];
+  const images: ImageEntry[] = [];
   let nextId = 1;
   let mode: ArrangeMode = "row";
   let gap = 0;
@@ -95,7 +95,10 @@ export function initTatami() {
       dropZone.classList.remove("active");
     }),
   );
-  dropZone.addEventListener("drop", function (e) {
+  // Window-level so a drop outside the zone doesn't navigate away to the image.
+  window.addEventListener("dragover", (e) => e.preventDefault());
+  window.addEventListener("drop", function (e) {
+    e.preventDefault();
     const files = (e.dataTransfer && e.dataTransfer.files) || [];
     for (const f of files) {
       if (f.type.startsWith("image/")) addImageFromBlob(f);
@@ -216,7 +219,9 @@ export function initTatami() {
 
   function setMode(m: ArrangeMode) {
     mode = m;
-    segButtons.forEach((b) => b.classList.toggle("active", b.dataset.mode === m));
+    segButtons.forEach((b) =>
+      b.classList.toggle("active", b.dataset.mode === m),
+    );
     const isGrid = m === "grid";
     colsControl.classList.toggle("disabled", !isGrid);
     directionToggle.classList.toggle("disabled", !isGrid);
@@ -385,10 +390,12 @@ export function initTatami() {
         workCanvas.toBlob(resolve, "image/png"),
       );
       if (!blob) throw new Error("no blob");
-      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      await navigator.clipboard.write([
+        new ClipboardItem({ "image/png": blob }),
+      ]);
       flash("Copied ✓", true);
     } catch {
-      flash("Clipboard blocked in preview — right-click the image instead", false);
+      flash("Clipboard blocked — right-click the image to copy", false);
     }
   }
 
