@@ -1,25 +1,40 @@
 version: 2
+
 updates:
-  - package-ecosystem: npm
+  # package.json + package-lock.json
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-patch"
-          - "version-update:semver-minor"
-          - "version-update:semver-major"
+      day: "friday"
+      time: "18:00"
+      timezone: "Europe/Zurich"
+    groups:
+      all-npm:
+        patterns: ["*"]
+        applies-to: version-updates
+      all-npm-security:
+        patterns: ["*"]
+        applies-to: security-updates
     commit-message:
-      prefix: "npm"
-    open-pull-requests-limit: 10
+      prefix: "chore"
+      include: "scope"
+
+  # GitHub Actions workflow versions (.github/workflows/*.yml)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-patch"
-          - "version-update:semver-minor"
-          - "version-update:semver-major"
+      day: "friday"
+      time: "18:00"
+      timezone: "Europe/Zurich"
+    groups:
+      all-actions:
+        patterns: ["*"]
+        applies-to: version-updates
+      all-actions-security:
+        patterns: ["*"]
+        applies-to: security-updates
+    commit-message:
+      prefix: "chore"
+      include: "scope"
