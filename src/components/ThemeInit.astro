@@ -1,0 +1,27 @@
+---
+// Sets data-theme before first paint to avoid a flash of the wrong theme.
+// Shared by BaseLayout and ToolLayout so the detection logic lives in one place.
+---
+
+<script is:inline>
+  const getTheme = () => {
+    if (
+      typeof localStorage !== "undefined" &&
+      localStorage.getItem("theme")
+    ) {
+      return localStorage.getItem("theme");
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  };
+
+  const theme = getTheme();
+  if (theme === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+  window.localStorage.setItem("theme", theme);
+</script>

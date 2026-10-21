@@ -15,6 +15,7 @@ interface Props {
 
 import Seo from "../components/seo/Seo.astro";
 import Schema from "../components/seo/Schema.astro";
+import ThemeInit from "../components/ThemeInit.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
 import Navbar from "../components/layout/Navbar.astro";
 import Footer from "../components/layout/Footer.astro";
@@ -45,28 +46,7 @@ const finalIgnoreTitleTemplate = metadata?.ignoreTitleTemplate || false;
     />
     <Schema type="WebSite" data={{}} />
     <slot name="head" />
-    <script is:inline>
-      const getTheme = () => {
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("theme")
-        ) {
-          return localStorage.getItem("theme");
-        }
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          return "dark";
-        }
-        return "light";
-      };
-
-      const theme = getTheme();
-      if (theme === "light") {
-        document.documentElement.setAttribute("data-theme", "light");
-      } else {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
-      window.localStorage.setItem("theme", theme);
-    </script>
+    <ThemeInit />
   </head>
   <body class="bg-background text-foreground antialiased">
     <a
