@@ -30,7 +30,7 @@
     "astro-icon": "^1.1.5",
     "remark-reading-time": "^2.1.0",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.20",
